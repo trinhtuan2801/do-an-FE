@@ -429,7 +429,7 @@ export class GameManager extends Component implements APIHandler {
     leanCamera() {
         if (this.body_lean !== BodyLean.NONE || this.gamestate !== GameState.PLAY) return
         const isRight = Math.floor(Math.random() * 2)
-        const angle = isRight ? -20 : 20
+        const angle = isRight ? 20 : -20
         this.rotateCamera(angle)
         this.body_lean = isRight ? BodyLean.RIGHT : BodyLean.LEFT
     }
@@ -936,13 +936,15 @@ export class GameManager extends Component implements APIHandler {
     }
 
     calculateBodyAngle(s1: Array<number>, s2: Array<number>, h1: Array<number>, h2: Array<number>) {
-        if (this.gamestate !== GameState.PLAY) return
+        console.log(BodyLean[this.body_lean])
+        if (this.gamestate !== GameState.PLAY || this.body_lean === BodyLean.NONE) return
         const p1 = new Vec2((s1[1] + s2[1]) / 2, (s1[0] + s2[0]) / 2)
         const p2 = new Vec2((h1[1] + h2[1]) / 2, (h1[0] + h2[0]) / 2)
         const vec = p2.subtract(p1)
         const angle = Math.atan(vec.x / vec.y) * 180 / Math.PI
-        console.log(angle)
-        if ((this.body_lean === BodyLean.RIGHT && angle >= 20) || (this.body_lean === BodyLean.LEFT && angle <= -20)) {
+        console.log(angle, BodyLean[this.body_lean])
+        if ((this.body_lean === BodyLean.RIGHT && angle >= 10) || (this.body_lean === BodyLean.LEFT && angle <= -10)) {
+            console.log("RESET CAMERA")
             this.resetCamera()
             this.scheduleOnce(this.leanCamera, 3)
         }
@@ -955,7 +957,7 @@ export class GameManager extends Component implements APIHandler {
         if (this.prev_gamestate == GameState.HOMESCREEN) return
         // let type = poseresult.pose
         let guide = poseresult.mguide
-        console.log(guide)
+        // console.log(guide)
         //pause game
         if (guide != MoveGuide.OK && this.gamestate != GameState.PAUSE) {
             this.notInBox++
@@ -1154,10 +1156,6 @@ export class GameManager extends Component implements APIHandler {
         })
     }
 
-    onnetworkStatusChange(ns: NetworkStatus) {
-        return null
-    }
-
     pauseMusic() {
         this.audio.pause()
     }
@@ -1194,6 +1192,14 @@ export class GameManager extends Component implements APIHandler {
             tween(node).to(1, { position: pos }, { easing: 'quadOut' }).start()
         else
             node.setPosition(pos)
+    }
+
+    onRegister(message: string) {
+
+    }
+    
+    onLogin(message: string) {
+
     }
 
 }
