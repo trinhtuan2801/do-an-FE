@@ -27,6 +27,10 @@ export interface LevelResult {
   percent: number,
 }
 
+export interface LevelData {
+  name: string
+}
+
 export interface DetectPoseResponse {
   mguide: MoveGuide;
   keypoints: object;
@@ -48,11 +52,17 @@ export interface GetAllResultsResponse {
   data: Array<LevelResult>
 }
 
+export interface GetLevelsResponse {
+  success: number,
+  data: Array<LevelData>
+}
+
 export interface APIHandler {
   onDetectPose(response: DetectPoseResponse): void;
   onRegister(response: RegisterResponse): void;
   onLogin(response: LoginResponse): void;
   onGetAllResults(response: GetAllResultsResponse): void;
+  onGetLevels(response: GetLevelsResponse): void
 }
 
 let debug: boolean = false;
@@ -147,6 +157,9 @@ export class APIHelper extends Object {
       case 'get_all_results':
         this.apiHandler.onGetAllResults(data.response as GetAllResultsResponse)
         break
+      case 'get_levels':
+        this.apiHandler.onGetLevels(data.response as GetLevelsResponse)
+        break
     }
   }
 
@@ -202,6 +215,13 @@ export class APIHelper extends Object {
     const message = {
       command: 'get_all_results',
       user_id,
+    }
+    this.ws.send(JSON.stringify(message))
+  }
+
+  public async getLevels () {
+    const message = {
+      command: 'get_levels',
     }
     this.ws.send(JSON.stringify(message))
   }

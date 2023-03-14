@@ -1,6 +1,6 @@
 
 import { _decorator, Component, Node, systemEvent, SystemEvent, Sprite, SpriteFrame, assetManager, Texture2D, ImageAsset, color, Label, director, Vec3, UITransform, Prefab, instantiate, Vec2, EventKeyboard, clamp, AudioSource, AudioClip, tween, NodePool, CubicSplineNumberValue, Color, UIOpacity, Camera, Material, MeshRenderer } from 'cc';
-import { APIHandler, APIHelper, DetectPoseResponse, GetAllResultsResponse, LoginResponse, MoveGuide, NetworkStatus, RegisterResponse } from './APIHelper';
+import { APIHandler, APIHelper, DetectPoseResponse, GetAllResultsResponse, GetLevelsResponse, LoginResponse, MoveGuide, NetworkStatus, RegisterResponse } from './APIHelper';
 import { PlaygroundUser } from './APIPlayground';
 import { BigTarget } from './BigTarget';
 import { CameraController } from './CameraController';
@@ -1197,6 +1197,10 @@ export class GameManager extends Component implements APIHandler {
   }
 
   onGetAllResults(response: GetAllResultsResponse) {
+
+  }
+
+  onGetLevels(response: GetLevelsResponse) {
 
   }
 

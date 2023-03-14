@@ -1,7 +1,8 @@
 
 import { _decorator, Component, Node, EditBox, Label, UIOpacity, tween, Vec3, Color } from 'cc';
-import { APIHandler, APIHelper, DetectPoseResponse, GetAllResultsResponse, LoginResponse, RegisterResponse } from './APIHelper';
+import { APIHandler, APIHelper, DetectPoseResponse, GetAllResultsResponse, GetLevelsResponse, LoginResponse, RegisterResponse } from './APIHelper';
 import { LevelData } from './data';
+import { UILevelListAdmin } from './UILevelListAdmin';
 const { ccclass, property } = _decorator;
 
 @ccclass('UILoginForm')
@@ -32,6 +33,18 @@ export class UILoginForm extends Component implements APIHandler {
 
   @property(Node)
   username_node: Node = null
+
+  @property(Node)
+  admin_button: Node = null
+
+  @property(UILevelListAdmin)
+  level_list_admin: UILevelListAdmin = null
+
+  start() {
+    this.admin_button.active = false
+    this.username_node.active = false
+    this.button_login.active = true
+  }
 
   showUI() {
     this.UI.active = true
@@ -66,16 +79,16 @@ export class UILoginForm extends Component implements APIHandler {
     )
   }
 
+  getAdminLevels() {
+
+  }
+
   setActionResult(isSuccess: boolean, str: string) {
     this.action_result.color = isSuccess ? new Color(0, 255, 0) : new Color(255, 0, 255)
     this.action_result.string = str
     this.scheduleOnce(() => {
       this.action_result.string = ''
     }, 3)
-  }
-
-  getAllResults() {
-
   }
 
   onDetectPose(response: DetectPoseResponse) {
@@ -100,10 +113,15 @@ export class UILoginForm extends Component implements APIHandler {
       this.username.string = ''
       this.password.string = ''
 
+      if (user_data.isAdmin) {
+        this.admin_button.active = true
+        this.api.getLevels()
+      }
+
       this.api.getAllResults(user_data._id)
 
       this.hideUI()
-      
+
     }
   }
 
@@ -120,11 +138,17 @@ export class UILoginForm extends Component implements APIHandler {
     LevelData.user_data = null
     this.username_node.active = false
     this.button_login.active = true
+    this.admin_button.active = false
     for (const level of LevelData.levels) {
       level.score = 0
       level.percent = 0
     }
     console.log(LevelData.levels)
+  }
+
+  onGetLevels(response: GetLevelsResponse) {
+    console.log('levels', response.data)
+    this.level_list_admin.init(response.data)
   }
 
 
