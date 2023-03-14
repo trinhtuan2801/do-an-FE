@@ -25,6 +25,7 @@ export class UIChooseLevel extends Component {
     {
         this.UI.active = true
         this.cloak.active = true
+        this.updateScore()
         this.cloak.getComponent(UIOpacity).opacity = 0
         tween(this.UI).to(0.2, {scale: new Vec3(1, 1, 1)}, {easing: 'quadOut'}).start()
         tween(this.cloak.getComponent(UIOpacity)).to(0.1, {opacity: 255}).start()
